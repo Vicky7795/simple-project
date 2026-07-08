@@ -1,0 +1,24 @@
+# Node.js
+**/node_modules/
+**/dist/
+**/.env
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache/
+**/.venv/
+**/venv/
+**/env/
+
+# Database
+**/*.db
+**/*.sqlite
+
+# Editor and OS
+**/.vscode/
+**/.idea/
+**/.DS_Store
+Thumbs.db
