@@ -5,11 +5,12 @@ from sqlalchemy.orm import sessionmaker
 
 from urllib.parse import urlparse
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip().strip("'\"")
 
-if not DATABASE_URL:
+if not DATABASE_URL or not DATABASE_URL.startswith(("sqlite", "postgresql", "mysql")):
     print("\n" + "!" * 80)
-    print("WARNING: DATABASE_URL environment variable is NOT set!")
+    print("WARNING: DATABASE_URL environment variable is NOT set or invalid!")
+    print(f"Value read: '{DATABASE_URL}'")
     print("Falling back to SQLite local database (aicrm.db).")
     print("WARNING: All data will be WIPED on Render restarts due to ephemeral disk!")
     print("!" * 80 + "\n")
