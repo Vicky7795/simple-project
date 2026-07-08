@@ -3,8 +3,26 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Default to SQLite for easy local setup, allow overriding via environment variable
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./aicrm.db")
+from urllib.parse import urlparse
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    print("\n" + "!" * 80)
+    print("WARNING: DATABASE_URL environment variable is NOT set!")
+    print("Falling back to SQLite local database (aicrm.db).")
+    print("WARNING: All data will be WIPED on Render restarts due to ephemeral disk!")
+    print("!" * 80 + "\n")
+    DATABASE_URL = "sqlite:///./aicrm.db"
+
+# Securely parse scheme and host for logs
+try:
+    parsed = urlparse(DATABASE_URL)
+    scheme = parsed.scheme
+    host = parsed.hostname or "local"
+    print(f"Database connection parsed: {scheme}://{host}")
+except Exception:
+    print("Database connection parsed: unknown")
 
 connect_args = {}
 if DATABASE_URL.startswith("sqlite"):
