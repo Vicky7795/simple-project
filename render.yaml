@@ -1,15 +1,11 @@
 services:
-  # 1. Backend Service (FastAPI)
+  # 1. Backend Service (FastAPI running on SQLite)
   - type: web
     name: aicrm-backend
     env: python
     buildCommand: pip install -r backend/requirements.txt
     startCommand: cd backend/app && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: aicrm-db
-          property: connectionString
       - key: GROQ_API_KEY
         sync: false # Render will securely prompt you to enter your Groq API Key on deploy
       - key: GROQ_PRIMARY_MODEL
@@ -26,8 +22,3 @@ services:
     envVars:
       - key: VITE_API_BASE
         sync: false # Render will prompt you for this value. You can enter your backend URL here.
-
-databases:
-  # Provision a PostgreSQL Database on Render
-  - name: aicrm-db
-    plan: free
