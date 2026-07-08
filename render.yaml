@@ -25,10 +25,7 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE
-        fromService:
-          name: aicrm-backend
-          type: web
-          property: url
+        sync: false # Render will prompt you for this value. You can enter your backend URL here.
 
 databases:
   # Provision a PostgreSQL Database on Render
