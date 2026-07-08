@@ -12,7 +12,8 @@ from api import hcps, interactions, followups, agent
 
 # Auto create tables and seed database
 try:
-    print("Initializing database...")
+    db_type = os.getenv("DATABASE_URL", "sqlite:///./aicrm.db").split("://")[0]
+    print(f"Initializing database... Connected to: {db_type}")
     Base.metadata.create_all(bind=engine)
     print("Tables verified/created. Running seeder...")
     seed_db()

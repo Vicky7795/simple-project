@@ -8,3 +8,4 @@ langgraph
 langchain-groq
 python-dotenv
 requests
+psycopg2-binary

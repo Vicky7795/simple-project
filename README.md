@@ -92,6 +92,13 @@ cd ../frontend
 cp .env.example .env
 ```
 
+### 💾 Database Configuration & Production Warnings
+
+* **Local Dev Fallback**: By default, the application runs on **SQLite** (`aicrm.db`) for easy local development without setting up database servers.
+* **Production Database (PostgreSQL/MySQL)**: In production (e.g. deployed on Render), you must set the `DATABASE_URL` environment variable pointing to a PostgreSQL or MySQL instance. 
+* > [!WARNING]
+  > **Do not use SQLite in production.** Render's free tier has an ephemeral filesystem. If you run SQLite in production on Render, the database file will be deleted and reset on every server restart or redeploy, causing you to lose all logged interactions. Always provision and link a PostgreSQL database for production deployments.
+
 ---
 
 ### 2. Running Locally (Directly)
