@@ -6,11 +6,43 @@ import { sendMessage, addLocalUserMessage, resetSession } from '../features/chat
 import { fetchInteractions, fetchFollowUps } from '../features/interactions/interactionsSlice';
 import { SummaryCard } from './SummaryCard';
 
-export const InteractionChat: React.FC = () => {
+import { fetchHcps, HCP } from '../features/hcps/hcpsSlice';
+
+interface InteractionChatProps {
+  onSelectHcp?: (hcp: HCP) => void;
+  onEditInteraction?: (id: number) => void;
+}
+
+export const InteractionChat: React.FC<InteractionChatProps> = ({
+  onSelectHcp,
+  onEditInteraction,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const { messages, status, threadId, lastAgentResponse, error } = useSelector((state: RootState) => state.chat);
+  const hcps = useSelector((state: RootState) => state.hcps.list);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Sync AI-matched HCP back to App level
+  useEffect(() => {
+    if (lastAgentResponse && lastAgentResponse.tool_result && lastAgentResponse.tool_result.success) {
+      const toolResult = lastAgentResponse.tool_result;
+      const hcpId = toolResult.hcp?.id || toolResult.details?.hcp_id;
+      
+      if (hcpId && onSelectHcp) {
+        const matched = hcps.find((h) => h.id === hcpId);
+        if (matched) {
+          onSelectHcp(matched);
+        }
+      } else if (lastAgentResponse.tool_used === 'lookup_hcp' && toolResult.matches && toolResult.matches.length > 0) {
+        const firstMatch = toolResult.matches[0];
+        const matched = hcps.find((h) => h.id === firstMatch.id);
+        if (matched && onSelectHcp) {
+          onSelectHcp(matched);
+        }
+      }
+    }
+  }, [lastAgentResponse, hcps, onSelectHcp]);
 
   // Auto-scroll to bottom of chat
   const scrollToBottom = () => {
@@ -98,6 +130,7 @@ export const InteractionChat: React.FC = () => {
                         dispatch(fetchInteractions());
                         dispatch(fetchFollowUps());
                       }}
+                      onEdit={onEditInteraction}
                     />
                   </div>
                 )}

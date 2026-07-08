@@ -9,12 +9,14 @@ interface InteractionFormProps {
   preselectedHcpId?: number;
   editingInteractionId?: number;
   onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
 export const InteractionForm: React.FC<InteractionFormProps> = ({
   preselectedHcpId,
   editingInteractionId,
   onSuccess,
+  onCancel,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const hcps = useSelector((state: RootState) => state.hcps.list);
@@ -352,14 +354,26 @@ export const InteractionForm: React.FC<InteractionFormProps> = ({
         </div>
 
         {/* Submit */}
-        <button
-          type="submit"
-          className="btn btn-primary"
-          style={{ width: '100%', height: '44px', marginTop: '0.5rem' }}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Saving...' : editingInteractionId ? 'Update Log' : 'Save Interaction Log'}
-        </button>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+          {editingInteractionId && onCancel && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ flex: 1, height: '44px' }}
+              onClick={onCancel}
+            >
+              Cancel Edit
+            </button>
+          )}
+          <button
+            type="submit"
+            className="btn btn-primary"
+            style={{ flex: 2, height: '44px' }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : editingInteractionId ? 'Update Log' : 'Save Interaction Log'}
+          </button>
+        </div>
       </form>
     </div>
   );

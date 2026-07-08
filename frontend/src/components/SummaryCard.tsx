@@ -6,9 +6,10 @@ interface SummaryCardProps {
   toolResult: any;
   toolUsed: string;
   onUpdate?: () => void;
+  onEdit?: (id: number) => void;
 }
 
-export const SummaryCard: React.FC<SummaryCardProps> = ({ toolResult, toolUsed, onUpdate }) => {
+export const SummaryCard: React.FC<SummaryCardProps> = ({ toolResult, toolUsed, onUpdate, onEdit }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   if (!toolResult || !toolResult.success) {
@@ -134,7 +135,13 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ toolResult, toolUsed, 
         {interactionId && (
           <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem', marginTop: '0.25rem', display: 'flex', justifyContent: 'flex-end' }}>
             <button
-              onClick={() => setIsEditing(true)}
+              onClick={() => {
+                if (onEdit) {
+                  onEdit(interactionId);
+                } else {
+                  setIsEditing(true);
+                }
+              }}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', border: 'none', background: 'none', color: 'var(--brand-primary)', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem' }}
             >
               <Edit2 size={12} /> Edit Details

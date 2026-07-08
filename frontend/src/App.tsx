@@ -14,6 +14,7 @@ function App() {
   const dispatch = useDispatch<AppDispatch>();
   const [mode, setMode] = useState<'form' | 'chat'>('form');
   const [selectedHcp, setSelectedHcp] = useState<HCP | undefined>(undefined);
+  const [editingInteractionId, setEditingInteractionId] = useState<number | undefined>(undefined);
 
   // Redux state
   const interactions = useSelector((state: RootState) => state.interactions.list);
@@ -33,6 +34,7 @@ function App() {
   const handleFormSuccess = () => {
     dispatch(fetchInteractions());
     dispatch(fetchFollowUps());
+    setEditingInteractionId(undefined);
   };
 
   // Stats calculation
@@ -111,10 +113,18 @@ function App() {
           {mode === 'form' ? (
             <InteractionForm
               preselectedHcpId={selectedHcp?.id}
+              editingInteractionId={editingInteractionId}
               onSuccess={handleFormSuccess}
+              onCancel={() => setEditingInteractionId(undefined)}
             />
           ) : (
-            <InteractionChat />
+            <InteractionChat
+              onSelectHcp={handleSelectHcp}
+              onEditInteraction={(id) => {
+                setEditingInteractionId(id);
+                setMode('form');
+              }}
+            />
           )}
 
           {/* Recent Interactions Feed */}
